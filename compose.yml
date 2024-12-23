@@ -1,0 +1,42 @@
+services:
+  
+  actix-db:
+    container_name: actix-db
+    image: postgres:16-alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./src/main/storage/migrations:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} || exit 1" ]
+      interval: 10s
+      retries: 10
+      start_period: 60s
+      timeout: 10s
+    networks:
+      - dev_nk
+    ports:
+      - "5433:5432"
+  
+  actix-app:
+    container_name: actix-app
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      actix-db:
+        condition: service_healthy
+    networks:
+      - dev_nk
+    ports:
+      - "8080:8080"
+
+networks:
+  dev_nk:
+    driver: bridge
