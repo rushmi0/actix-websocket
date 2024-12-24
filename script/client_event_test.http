@@ -1,0 +1,14 @@
+###
+
+WEBSOCKET ws://localhost:8080/api/v1/ws/event
+Content-Type: application/json
+
+{
+  "id": "0200005b0fc51e70b66db99ba1708b1a1b008c30db35d19d35146b3e09",
+  "created_at": 1734144,
+  "kind": 0,
+  "tags": [
+     ["nonce", "19735841", "23"],
+     ["t", "siamstr"]
+  ]
+}
