@@ -1,5 +1,5 @@
 use dotenvy::dotenv;
-use log::info;
+use tracing::info;
 use once_cell::sync::OnceCell;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres};

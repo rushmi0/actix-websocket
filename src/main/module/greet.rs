@@ -1,4 +1,4 @@
-use log::info;
+use tracing::info;
 
 pub async fn greet(name: &str) -> String {
     info!("Receive data: {}", name);

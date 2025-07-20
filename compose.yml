@@ -2,15 +2,13 @@ services:
   
   actix-db:
     container_name: actix-db
-    image: postgres:16-alpine
+    image: postgres:17.5-alpine
     env_file:
       - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
-    volumes:
-      - ./src/main/storage/migrations:/docker-entrypoint-initdb.d/
     restart: unless-stopped
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} || exit 1" ]

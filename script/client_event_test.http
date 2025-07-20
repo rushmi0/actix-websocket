@@ -1,6 +1,6 @@
 ###
 
-WEBSOCKET ws://localhost:8080/api/v1/ws/event
+WEBSOCKET ws://localhost:8080/
 Content-Type: application/json
 
 {
@@ -12,3 +12,7 @@ Content-Type: application/json
      ["t", "siamstr"]
   ]
 }
+
+### #GET https://fenrir-s.notoshi.win/ http://localhost:8080/
+GET https://fenrir-s.notoshi.win/
+accept: application/nostr+json

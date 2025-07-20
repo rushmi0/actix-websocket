@@ -1,20 +1,24 @@
+use crate::services::gateway::gateway;
+use crate::storage::initialize;
 use actix_cors::Cors;
 use actix_web::middleware::Logger;
-use actix_web::{http, App, HttpServer};
-use env_logger::{init_from_env, Env};
-
-use crate::services::api::v1;
-use crate::storage::initialize;
+use actix_web::{App, HttpServer, http, web};
+use env_logger::{Env, init_from_env};
+use std::path::PathBuf;
 
 pub async fn run() -> std::io::Result<()> {
     init_from_env(Env::default().default_filter_or("info"));
     initialize();
+
+    let static_path: PathBuf = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("src/main/static");
+
     HttpServer::new(move || {
         App::new()
+            .app_data(web::Data::new(static_path.clone()))
             .wrap(Logger::default())
-            .wrap(Logger::new("%a %{User-Agent}i"))
             .wrap(cors_config())
-            .configure(v1::service_hub)
+            //.route("/{tail:.*}", web::to(gateway))
+            .default_service(web::route().to(gateway))
     })
     .bind(("0.0.0.0", 8080))?
     .run()
@@ -23,10 +27,10 @@ pub async fn run() -> std::io::Result<()> {
 
 fn cors_config() -> Cors {
     Cors::default()
+        .allow_any_origin()
         .allowed_methods(vec!["GET", "POST"])
         .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
         .allowed_header(http::header::CONTENT_TYPE)
         .max_age(3700)
         .send_wildcard()
-        .allow_any_origin()
 }
